@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.VisualBasic;
+using Microsoft.VisualBasic.Devices;
 
 namespace PracticaFinal
 {
@@ -20,7 +21,10 @@ namespace PracticaFinal
 
         private void btnValidaciones_Click(object sender, EventArgs e)
         {
-            validaciones();
+            validarSueldo();
+            validarPuesto();
+            validarLongitudNombre();
+            validarLongitudApellido();
 
         }
 
@@ -31,8 +35,23 @@ namespace PracticaFinal
 
         private void btnHoras_Click(object sender, EventArgs e)
         {
-            horasTrabajadas();
+            int[] horas = horas = new int[5];
+            int suma = 0;
+
+            horasTrabajadas(horas);
+
+            for (int i = 0; i < horas.Length; i++)
+            {
+                suma = horas[i] + suma;
+            }
+
+            double promedio = horas.Average();
+            int contador = diasMenosTrabajados(horas);
+
+            MessageBox.Show("El total de horas trabajadas es: " + suma + "\nEl promedio de las horas trabajadas esta semana es: " + promedio + "\nEsta semana se trabajaron  " + contador + " dias menos de 4 hs diarias");
+
         }
+
 
         private void btnLimpiar_Click(object sender, EventArgs e)
         {
@@ -41,7 +60,10 @@ namespace PracticaFinal
 
 
 
-
+        
+       
+        
+        
 
 
 
@@ -55,16 +77,53 @@ namespace PracticaFinal
 
         #region metodos
 
-        private void validaciones()
+        private void validarSueldo()
         {
-            string nombre = txtNombre.Text;
+
             decimal sueldo = Convert.ToDecimal(txtSueldo.Text);
-            string puesto = txtPuesto.Text;
-
-
-            if (sueldo < 0 && puesto != "Soporte Técnico" || puesto != "DBA" || puesto != "Desarrollador" && nombre.Length > 1 && nombre.Length < 50)
+            if (sueldo <= 0)
             {
-                MessageBox.Show("Uno o mas datos no son correctos!");
+                MessageBox.Show("ERROR, EL SUELDO INGRESADO DEBE SER MAYOR A CERO");
+            }
+        }
+       
+        private void validarPuesto()
+        {
+            string puesto = txtPuesto.Text;
+            if (puesto != " Soporte Tecnico" || puesto != "DBA" || puesto != "Desarrollador")
+            {
+            
+                MessageBox.Show("ERROR AL INGRESAR EL PUESTO, DEBE INGRESAR ALGUNA DE LAS SIGUIENTES OPCIONES: \n\nSoporte Tecnico \nDBA \nDesarrollador");
+            }
+        }
+
+        private void validarLongitudNombre()
+        {
+
+            string nombre = txtNombre.Text;
+
+            if (nombre.Length < 2)
+            {
+                MessageBox.Show("ERROR \nLos datos ingresados deben tener mas de dos caracteres");
+            }
+            else if (nombre.Length > 50)
+            {
+                MessageBox.Show("ERROR \nLos datos ingresados deben tener menos de 50 caracteres");
+            }
+        }
+
+        private void validarLongitudApellido()
+        {
+
+            string apellido = txtApellido.Text;
+
+            if (apellido.Length < 2)
+            {
+                MessageBox.Show("ERROR \nLos datos ingresados deben tener mas de dos caracteres");
+            }
+            else if (apellido.Length > 50)
+            {
+                MessageBox.Show("ERROR \nLos datos ingresados deben tener menos de 50 caracteres");
             }
         }
 
@@ -82,44 +141,30 @@ namespace PracticaFinal
             MessageBox.Show(upperString + " " + upperString2 + " " + upperString3);
         }
 
-        private void horasTrabajadas()
+
+        private void horasTrabajadas(int[] horario)
         {
-            int[] horas;
-            horas = new int[5];
-            double acumulado = 0;
-            double promedio = 0;
-            int min = Int32.MinValue;
 
 
-
-
-            for (int i = 0; i < horas.Length; i++)
+            for (int i = 0; i < horario.Length; i++)
             {
-                int numero = Convert.ToInt32(Interaction.InputBox("Ingrese horas trabajadas dia: " + (i+1)));
-                horas[i] = numero;
-                acumulado = acumulado + numero;
-                promedio = acumulado / 5;
-
-                
-                for (int j = 0; j < horas.Length; j++)
-                {
-                    if (horas[j] < min) ;
-                    {
-                     min = horas[j];
-                    }
-                }
-                   
-
+                int horasDiarias = Convert.ToInt32(Interaction.InputBox("Ingrese las horas trabajadas diariamente: "));
+                horario[i] = horasDiarias;
             }
-
-
-
-
-
-
-            MessageBox.Show("El numero total de horas trabajadas esta semana es: " + " " + acumulado + "." + " " + "El promedio de horas trabajadas es de: " + ". " + promedio + ". " + "El dia que menos horas trabajo es el dia: " + min);
-
         }
+        public int diasMenosTrabajados(int[] horario)
+        {
+            int contador = 0;
+            for (int i = 0; i < horario.Length; i++)
+            {
+                if (horario[i] < 4)
+                { 
+                    contador++;
+                } 
+            }
+            return contador;
+        }
+
 
         private void limpiar()
         {
@@ -128,6 +173,7 @@ namespace PracticaFinal
             txtPuesto.Clear();
             txtSueldo.Clear();
         }
+
        
     }
 }
