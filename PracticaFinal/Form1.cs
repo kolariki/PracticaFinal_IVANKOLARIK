@@ -103,7 +103,7 @@ namespace PracticaFinal
                 
                 for (int j = 0; j < horas.Length; j++)
                 {
-                    if (horas[j] > min) ;
+                    if (horas[j] < min) ;
                     {
                      min = horas[j];
                     }
